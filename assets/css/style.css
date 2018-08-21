@@ -1,0 +1,97 @@
+﻿html,body
+{
+    color: #333333;
+    background: #333333;
+    height: 100%;
+    font-size: 14px;
+    font-family: "Open Sans", "Trebuchet MS", sans-serif;
+}
+
+a
+{
+    color: #dd0000;
+    text-decoration: none;
+}
+
+a:hover
+{
+    color: #990000;
+}
+
+pre
+{
+    background: #f5f5f5;
+    border: 1px solid #cccccc;
+    padding: 10px;
+}
+
+table
+{
+    width: 100%;
+    border-color: #808080;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+th
+{
+    text-align: left;
+    line-height: 40px;
+}
+
+tbody tr
+{
+    border-top: 1px solid #dddddd;
+    line-height: 35px;
+    font-size: 14px;
+}
+
+tbody tr:first-child
+{
+    border-top: 2px solid #cccccc;
+}
+
+.shibe__header
+{
+    text-align: center;
+    height: 250px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.shibe__header h1
+{
+    color: white;
+    font-weight: 800;
+    font-size: 2.2em;
+    margin: 0;
+}
+
+.shibe__header h2
+{
+    color: white;
+    font-weight: normal;
+    font-size: 1.8em;
+    margin: 0;
+}
+
+.shibe__container
+{
+    background: #ffffff;
+    padding: 15px;
+    padding-top: 1px;
+    width: 1080px;
+    margin: auto;
+}
+
+.shibe__image__container
+{
+    text-align: center;
+}
+
+.shibe__image
+{
+    max-width: 100%;
+}

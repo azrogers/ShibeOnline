@@ -8,27 +8,47 @@ mod controller;
 mod images;
 mod rand_iter;
 
-use actix_web::{server, App};
+use actix_web::{server, App, HttpResponse, fs};
 use actix_web::http::Method;
 use actix_web::middleware::Logger;
 use config::Config;
-use controller::{AppParams, Controller};
+use controller::{AppParams, Controller, AppState};
 use images::Endpoints;
 use std::net::SocketAddr;
 
-fn create_app(settings : AppParams) -> App
+fn create_app(
+	settings_file : &Config, 
+	settings : AppParams) -> App<AppState>
 {
 	let mut endpoints = Endpoints::new();
-	endpoints.add("shibes", "content/shibes/*").unwrap();
-	let controller = Controller::new(endpoints, settings).unwrap();
+	let table = settings_file.get_table("endpoints").unwrap();
+	for key in table.keys()
+	{
+		let v = table.get(key);
+		match v
+		{
+			None => (),
+			Some(s) => {
+				endpoints.add(key, s.clone().into_str().unwrap()).unwrap();
+				debug!("loaded endpoint {}", key);
+			}
+		}
+	}
 
-	App::new()
+	let state = AppState { endpoints: endpoints, settings: settings };
+
+	App::with_state(state)
 		.middleware(Logger::default())
 		.resource(
+			"/",
+			|r| r.method(Method::GET).f(Controller::index))
+		.resource(
 			"/api/{endpoint}", 
-			move |r| {
-				r.method(Method::GET).f(move |req| controller.get_endpoint(&req))
-			})
+			|r| r.method(Method::GET).f(Controller::get_endpoint))
+		.handler("/assets", fs::StaticFiles::new("assets").unwrap())
+		.default_resource(|r| {
+			r.route().f(|_| HttpResponse::NotFound().body("Not found."))
+		})
 }
 
 fn main()
@@ -49,7 +69,7 @@ fn main()
 
 	let port : u16 = settings_file.get_int("port").unwrap_or(6767) as u16;
 	
-	server::new(move || create_app(settings.clone()))
+	server::new(move || create_app(&settings_file, settings.clone()))
 		.bind(SocketAddr::from(([127, 0, 0, 1], port)))
 		.unwrap()
 		.run();

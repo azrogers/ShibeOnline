@@ -2,9 +2,9 @@
 <html>
 <head>
 	<title>shibe.online - the shiba inu api</title>
-	<link href="/css/bootstrap.min.css" rel="stylesheet" />
-	<link href="/css/style.css" rel="stylesheet" />
-	<link href="/favicon.ico?v=1.1" rel="icon" type="image/x-icon" />
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,800" rel="stylesheet">
+	<link href="/assets/css/style.css" rel="stylesheet" />
+	<link href="/assets/favicon.ico?v=1.1" rel="icon" type="image/x-icon" />
 	<!-- oh yeah, gonna get that SEO. gonna be famous. -->
 	<meta property="og:title" content="shibe.online - the shiba inu api" />
 	<meta property="og:site_name" content="shibe.online" />
@@ -20,7 +20,7 @@
 		<h1>shibe.online</h1>
 		<h2>shibes as a service</h2>
 	</div>
-	<div class="shibe__container container">
+	<div class="shibe__container">
 		<p>
 			In this day and age, everyone and their dog has an API. So why not have an API for dogs? Shibe.online is that API.
 		</p>
@@ -30,10 +30,10 @@
 		<p>
 			<pre>
 http://shibe.online/api/shibes?count=[1-100]&urls=[true/false]&httpsUrls=[true/false]
-			</pre>
+</pre>
 		</p>
 		<p>
-			And you'll get back a JSON response of random images of shibes that's something like this:
+			And you'll get back a JSON response of random images of shibes that looks something like this:
 		</p>
 		<p>
 			<pre>
@@ -48,7 +48,7 @@ http://shibe.online/api/shibes?count=[1-100]&urls=[true/false]&httpsUrls=[true/f
 			And if those options in the URL aren't self-explanatory enough, here's a simple guide:
 		</p>
 		<p>
-			<table class="table">
+			<table>
 				<thead>
 					<tr>
 						<th>Name</th>
@@ -93,7 +93,7 @@ http://shibe.online/api/shibes?count=[1-100]&urls=[true/false]&httpsUrls=[true/f
 			<img class="shibe__image" src="{{ dog }}" alt="A shibe." />
 		</p>
 		<p>
-			Service by <a href="https://cybre.space/@commie">@commie@cybre.space</a>.
+			Service by @commie@cybre.space.
 		</p>
 		<p>
 			Special thanks to <a href="https://ja.md/">Jammy</a> for the shibes, <a href="http://www.vision.caltech.edu/visipedia/CUB-200.html">CalTech</a> for the birds, and 

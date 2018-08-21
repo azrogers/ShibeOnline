@@ -43,26 +43,26 @@ impl ImageManager
 	}
 }
 
-pub struct Endpoints<'a>
+pub struct Endpoints
 {
-	endpoints: HashMap<&'a str, ImageManager>
+	endpoints: HashMap<String, ImageManager>
 }
 
-impl<'a> Endpoints<'a>
+impl Endpoints
 {
 	pub fn new() -> Self
 	{
 		Self { endpoints: HashMap::new() }
 	}
 
-	pub fn add(&mut self, key: &'static str, glob: &'static str) -> Result<(), Box<Error>>
+	pub fn add(&mut self, key: &str, glob: String) -> Result<(), Box<Error>>
 	{
-		let im = try!(ImageManager::new(glob));
-		self.endpoints.insert(key, im);
+		let im = try!(ImageManager::new(&glob));
+		self.endpoints.insert(String::from(key), im);
 		Ok(())
 	}
 
-	pub fn get(&'a self, name: &str) -> Option<&'a ImageManager>
+	pub fn get(&self, name: &str) -> Option<&ImageManager>
 	{
 		match self.endpoints.get(name) {
 			Some(im) => Some(&im),

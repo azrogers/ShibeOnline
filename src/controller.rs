@@ -6,7 +6,6 @@ use actix_web::dev::HttpResponseBuilder;
 use actix_web::http::ContentEncoding;
 use askama::Template;
 use images::{Endpoints, ImageManager};
-use std::error::Error;
 
 pub struct AppParams
 {
@@ -26,11 +25,13 @@ impl AppParams
 	}
 }
 
-pub struct Controller<'a>
+pub struct AppState
 {
-	endpoints: Endpoints<'a>,
-	settings: AppParams
+	pub endpoints: Endpoints,
+	pub settings: AppParams
 }
+
+pub struct Controller { }
 
 struct ApiParams
 {
@@ -47,7 +48,7 @@ struct IndexTemplate<'a>
 }
 
 // gets the value of the query string as a usize, or returns the default
-fn get_query_usize(req: &HttpRequest, key: &'static str, default: usize) -> usize
+fn get_query_usize(req: &HttpRequest<AppState>, key: &'static str, default: usize) -> usize
 {
 	let query = req.query();
 	match query.get(key) {
@@ -56,7 +57,7 @@ fn get_query_usize(req: &HttpRequest, key: &'static str, default: usize) -> usiz
 	}
 }
 
-fn get_query_bool(req: &HttpRequest, key: &'static str, default: bool) -> bool
+fn get_query_bool(req: &HttpRequest<AppState>, key: &'static str, default: bool) -> bool
 {
 	let query = req.query();
 	match query.get(key) {
@@ -81,21 +82,13 @@ fn error(mut res : HttpResponseBuilder, message: &'static str) -> HttpResponse
 		.body(message)
 }
 
-impl<'a> Controller<'a>
+impl Controller
 {
-	pub fn new(
-		endpoints: Endpoints<'a>, 
-		settings: AppParams) 
-		-> Result<Self, Box<Error + 'static>>
+	pub fn index(req: &HttpRequest<AppState>) -> HttpResponse
 	{
-		Ok(Self { settings: settings, endpoints: endpoints })
-	}
-
-	pub fn index(&self) -> HttpResponse
-	{
-		let im = self.endpoints.get("shibes").unwrap();
+		let im = req.state().endpoints.get("shibes").unwrap();
 		let params = ApiParams { count: 1, https_urls: true, urls: true };
-		let dog_rand = self.get_images_for(&im, "shibes", &params);
+		let dog_rand = Controller::get_images_for(&req, &im, "shibes", &params);
 		let none = String::from("");
 		let index = IndexTemplate { dog: dog_rand.first().unwrap_or(&none) };
 		match index.render() {
@@ -104,19 +97,19 @@ impl<'a> Controller<'a>
 		}
 	}
 
-	pub fn get_endpoint(&self, req: &HttpRequest) -> HttpResponse
+	pub fn get_endpoint(req: &HttpRequest<AppState>) -> HttpResponse
 	{
-		let options = self.parse_api_params(req);
+		let options = Controller::parse_api_params(&req);
 		let endpoint = req.match_info().get("endpoint").unwrap_or("unknown");
 		debug!("request to endpoint {}", endpoint);
 
-		match self.endpoints.get(endpoint) {
-			Some(im) => self.serialize_images(&im, endpoint, &options),
+		match req.state().endpoints.get(endpoint) {
+			Some(im) => Controller::serialize_images(&req, &im, endpoint, &options),
 			None => error(HttpResponse::NotFound(), "Invalid endpoint.")
 		}
 	}
 
-	fn parse_api_params(&self, req: &HttpRequest) -> ApiParams
+	fn parse_api_params(req: &HttpRequest<AppState>) -> ApiParams
 	{
 		let count = num::clamp(get_query_usize(&req, "count", 1), 1, 100);
 		ApiParams { 
@@ -126,7 +119,7 @@ impl<'a> Controller<'a>
 		}
 	}
 
-	fn handle_url(&self, options: &ApiParams, endpoint: &str, file: &str) -> String
+	fn handle_url(settings: &AppParams, options: &ApiParams, endpoint: &str, file: &str) -> String
 	{
 		if !options.urls 
 		{
@@ -135,7 +128,7 @@ impl<'a> Controller<'a>
 		}
 		else if options.https_urls
 		{
-			let mut base = self.settings.https_url.clone();
+			let mut base = settings.https_url.clone();
 			base.push_str(endpoint);
 			base.push('/');
 			base.push_str(file);
@@ -143,7 +136,7 @@ impl<'a> Controller<'a>
 		}
 		else
 		{
-			let mut base = self.settings.http_url.clone();
+			let mut base = settings.http_url.clone();
 			base.push_str(endpoint);
 			base.push('/');
 			base.push_str(file);
@@ -151,20 +144,24 @@ impl<'a> Controller<'a>
 		}
 	}
 
-	fn get_images_for(&self, im: &ImageManager, endpoint: &str, options: &ApiParams) -> Vec<String>
+	fn get_images_for(
+		req: &HttpRequest<AppState>, 
+		im: &ImageManager, 
+		endpoint: &str, 
+		options: &ApiParams) -> Vec<String>
 	{
 		return im.get_rand_iter(options.count)
-			.map(|f| self.handle_url(&options, &endpoint, &f))
+			.map(|f| Controller::handle_url(&req.state().settings, &options, &endpoint, &f))
 			.collect();
 	}
 
 	fn serialize_images(
-		&self, 
+		req: &HttpRequest<AppState>,
 		im: &ImageManager, 
 		endpoint: &str, 
 		options: &ApiParams) -> HttpResponse
 	{
-		let rand = self.get_images_for(&im, &endpoint, &options);
+		let rand = Controller::get_images_for(&req, &im, &endpoint, &options);
 		match serde_json::to_string(&rand) {
 			Ok(json) => ok(json),
 			Err(_e) => error(HttpResponse::InternalServerError(), "Couldn't serialize images.")

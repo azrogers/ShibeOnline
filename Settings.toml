@@ -1,3 +1,6 @@
 base_http_url="http://cdn.shibe.online/"
 base_https_url="https://cdn.shibe.online/"
 port = 6767
+
+[endpoints]
+shibes = "content/shibes/*"
