@@ -1,0 +1,19 @@
+[package]
+name = "shibeapp"
+version = "0.1.0"
+authors = ["Andrew Rogers <andrew@cpancake.me>"]
+build = "build.rs"
+
+[build-dependencies]
+askama = "0.7"
+
+[dependencies]
+actix-web = "0.7"
+glob = "0.2"
+serde_json = "1.0"
+rand = "0.5.5"
+num = "0.2.0"
+config = "0.9"
+log4rs = "0.8"
+log = "0.4.4"
+askama = "0.7"

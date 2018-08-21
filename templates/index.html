@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>shibe.online - the shiba inu api</title>
+	<link href="/css/bootstrap.min.css" rel="stylesheet" />
+	<link href="/css/style.css" rel="stylesheet" />
+	<link href="/favicon.ico?v=1.1" rel="icon" type="image/x-icon" />
+	<!-- oh yeah, gonna get that SEO. gonna be famous. -->
+	<meta property="og:title" content="shibe.online - the shiba inu api" />
+	<meta property="og:site_name" content="shibe.online" />
+	<meta property="og:url" content="http://shibe.online/" />
+	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:title" content="shibe.online - the shiba inu api" />
+	<meta name="twitter:description" content="shibes as a service" />
+	<meta name="twitter:image" content="{{ dog }}" />
+	<meta name="description" content="shibes as a service" />
+</head>
+<body>
+	<div class="shibe__header">
+		<h1>shibe.online</h1>
+		<h2>shibes as a service</h2>
+	</div>
+	<div class="shibe__container container">
+		<p>
+			In this day and age, everyone and their dog has an API. So why not have an API for dogs? Shibe.online is that API.
+		</p>
+		<p>
+			To get some dogs, just make a GET request to the following URL:
+		</p>
+		<p>
+			<pre>
+http://shibe.online/api/shibes?count=[1-100]&urls=[true/false]&httpsUrls=[true/false]
+			</pre>
+		</p>
+		<p>
+			And you'll get back a JSON response of random images of shibes that's something like this:
+		</p>
+		<p>
+			<pre>
+[
+	"image url 1",
+	"image url 2",
+	...
+]
+</pre>
+		</p>
+		<p>
+			And if those options in the URL aren't self-explanatory enough, here's a simple guide:
+		</p>
+		<p>
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th width="12%">Possible Values</th>
+						<th>Description</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>count</td>
+						<td>integers 1-100</td>
+						<td>
+							The number of images to be returned. Default is 1.
+						</td>
+					</tr>
+					<tr>
+						<td>urls</td>
+						<td>true/false</td>
+						<td>
+							Should the API return URLs or filenames without extensions? URLs are the default.
+						</td>
+					</tr>
+					<tr>
+						<td>httpsUrls</td>
+						<td>
+							true/false
+						</td>
+						<td>
+							Should the URLs be HTTPS or HTTP? They're HTTPS by default now.
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</p>
+		<p>
+			You can also get pictures of cats at /api/cats or birds at /api/birds. Same parameters apply.
+		</p>
+		<p>
+			That's it! Have a nice day. Here's a shibe:
+		</p>
+		<p class="shibe__image__container">
+			<img class="shibe__image" src="{{ dog }}" alt="A shibe." />
+		</p>
+		<p>
+			Service by <a href="https://cybre.space/@commie">@commie@cybre.space</a>.
+		</p>
+		<p>
+			Special thanks to <a href="https://ja.md/">Jammy</a> for the shibes, <a href="http://www.vision.caltech.edu/visipedia/CUB-200.html">CalTech</a> for the birds, and 
+			<a href="https://web.archive.org/web/20150703060412/http://137.189.35.203/WebUI/CatDatabase/catData.html">Microsoft Research Asia</a> et al for the cats!
+		</p>
+	</div>
+
+	<!-- Matomo -->
+	<script type="text/javascript">
+		var _paq = _paq || [];
+		/* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+		_paq.push(['trackPageView']);
+		_paq.push(['enableLinkTracking']);
+		(function() {
+			var u="//the-nsa.anime.lgbt/";
+			_paq.push(['setTrackerUrl', u+'piwik.php']);
+			_paq.push(['setSiteId', '4']);
+			var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+			g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+		})();
+	</script>
+	<!-- End Matomo Code -->
+</body>
+</html>

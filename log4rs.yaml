@@ -1,0 +1,34 @@
+# Scan this file for changes every 30 seconds
+refresh_rate: 30 seconds
+
+appenders:
+  # An appender named "stdout" that writes to stdout
+  stdout:
+    kind: console
+
+  # An appender named "requests" that writes to a file with a custom pattern encoder
+  requests:
+    kind: file
+    path: "log/requests.log"
+    encoder:
+      pattern: "{d} - {m}{n}"
+
+# Set the default logging level to "warn" and attach the "stdout" appender to the root
+root:
+  level: info
+  appenders:
+    - stdout
+
+loggers:
+  # Raise the maximum log level for events sent to the "app::backend::db" logger to "info"
+  app::backend::db:
+    level: info
+  
+  actix_web::middleware::logger:
+    level: info
+    appenders:
+      - requests
+    additive: false
+
+  shibeapp:
+    level: debug
