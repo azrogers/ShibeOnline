@@ -1,12 +1,15 @@
 extern crate actix_web;
 #[macro_use] extern crate askama;
+extern crate chrono;
 extern crate config;
 #[macro_use] extern crate log;
-extern crate log4rs;
 extern crate rand;
+extern crate redis;
+#[macro_use] extern crate serde_json;
 mod controller;
 mod images;
 mod rand_iter;
+mod logger;
 
 use actix_web::{server, App, HttpResponse, fs};
 use actix_web::http::Method;
@@ -38,7 +41,7 @@ fn create_app(
 	let state = AppState { endpoints: endpoints, settings: settings };
 
 	App::with_state(state)
-		.middleware(Logger::default())
+		.middleware(Logger::new("%{X-Real-IP}i \"%r\" %s %b \"%{User-Agent}i\" %Dms"))
 		.resource(
 			"/",
 			|r| r.method(Method::GET).f(Controller::index))
@@ -53,14 +56,30 @@ fn create_app(
 
 fn main()
 {
-	log4rs::init_file("log4rs.yaml", Default::default()).unwrap();
-	info!("starting server");
-
 	let mut settings_file = Config::default();
 
 	settings_file
 		.merge(config::File::with_name("Settings")).unwrap()
 		.merge(config::Environment::with_prefix("SHIBE")).unwrap();
+
+	let default_level = "trace";
+	let level = 
+		settings_file
+		.get_str("log_level")
+		.unwrap_or(default_level.to_owned())
+		.parse::<log::Level>()
+		.unwrap();
+
+	let console_enabled = settings_file.get_bool("log_console").unwrap();
+	let conn_str = settings_file.get_str("redis_url").unwrap();
+	let channel = settings_file.get_str("log_channel").unwrap();
+	let client = redis::Client::open(conn_str.as_str()).unwrap();
+	let conn = client.get_connection().unwrap();
+
+	logger::init(conn, channel, console_enabled, level).unwrap();
+
+	info!("connected to redis on {}", conn_str);
+	info!("starting server");
 
 	let settings = AppParams {
 		http_url: settings_file.get_str("base_http_url").unwrap(),

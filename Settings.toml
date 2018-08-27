@@ -1,6 +1,10 @@
-base_http_url="http://cdn.shibe.online/"
-base_https_url="https://cdn.shibe.online/"
+base_http_url = "http://cdn.shibe.online/"
+base_https_url = "https://cdn.shibe.online/"
 port = 6767
+log_level = "info"
+redis_url = "redis://127.0.0.1/"
+log_channel = "shibe_log"
+log_console = true
 
 [endpoints]
 shibes = "content/shibes/*"

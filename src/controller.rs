@@ -76,6 +76,7 @@ fn ok(content: String) -> HttpResponse
 
 fn error(mut res : HttpResponseBuilder, message: &'static str) -> HttpResponse
 {
+	error!("sending error response: {}", message);
 	res
 		.content_encoding(ContentEncoding::Auto)
 		.content_type("application/json")

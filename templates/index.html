@@ -12,7 +12,7 @@
 	<meta name="twitter:card" content="summary" />
 	<meta name="twitter:title" content="shibe.online - the shiba inu api" />
 	<meta name="twitter:description" content="shibes as a service" />
-	<meta name="twitter:image" content="{{ dog }}" />
+	<meta name="twitter:image" content="{{ dog|safe }}" />
 	<meta name="description" content="shibes as a service" />
 </head>
 <body>
@@ -90,7 +90,7 @@ http://shibe.online/api/shibes?count=[1-100]&urls=[true/false]&httpsUrls=[true/f
 			That's it! Have a nice day. Here's a shibe:
 		</p>
 		<p class="shibe__image__container">
-			<img class="shibe__image" src="{{ dog }}" alt="A shibe." />
+			<img class="shibe__image" src="{{ dog|safe }}" alt="A shibe." />
 		</p>
 		<p>
 			Service by @commie@cybre.space.
