@@ -22,7 +22,7 @@ impl Log for Logger
 
 	fn log(&self, record: &Record) 
 	{
-		if self.enabled(record.metadata()) && self.console
+		if self.enabled(record.metadata())
 		{
 			let msg = json!({
 				"time": Utc::now().to_rfc3339(),
@@ -37,12 +37,15 @@ impl Log for Logger
 			let res : RedisResult<isize> = conn.lpush(&self.channel, msg.to_string());
 			res.ok();
 
-			println!(
-				"{} {:<5} [{}] {}",
-				Utc::now().format("%Y-%m-%d %H:%M:%S").to_string(),
-				record.level().to_string(),
-				record.module_path().unwrap_or_default(),
-				record.args());
+			if self.console
+			{
+				println!(
+					"{} {:<5} [{}] {}",
+					Utc::now().format("%Y-%m-%d %H:%M:%S").to_string(),
+					record.level().to_string(),
+					record.module_path().unwrap_or_default(),
+					record.args());
+			}
 		}
 	}
 
